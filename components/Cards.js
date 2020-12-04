@@ -23,6 +23,8 @@
 
 import axios from 'axios'
 
+const entryPoint = document.querySelector('.cards-container')
+
 function CardMaker(obj){
 
     // create elements 
@@ -33,13 +35,43 @@ function CardMaker(obj){
     const img = document.createElement('img')
     const author = document.createElement('span')
 
+    // assign classes to tags
+    card.classList.add('card')
+    headlineD.classList.add('headline')
+    authorD.classList.add('author')
+    imgC.classList.add('img-container')
 
+    //create text/img for needed tags
+    headlineD.textContent = obj.headline
+    img.src = obj.authorPhoto
+    author.textContent = obj.authorName
+
+    //create structure
+    entryPoint.appendChild(card)
+    card.appendChild(headlineD)
+    card.appendChild(authorD)
+    authorD.appendChild(imgC)
+    imgC.appendChild(img)
+    authorD.appendChild(author)
+
+    // add event listener 
+    card.addEventListener('click', (event) => {
+        console.log(obj.headline, event)
+    })
+
+    //return card
+    return card
 }
 
 axios.get('https://lambda-times-api.herokuapp.com/articles')
 .then(res => {
-debugger
+ const dataFrame = Object.values(res.data.articles)
+ dataFrame.map(i => {
+     i.forEach(b => {
+         entryPoint.appendChild(CardMaker(b))
+     })
+ })
 })
 .catch(err => {
-debugger
+console.log('this si the err:', err)
 })
