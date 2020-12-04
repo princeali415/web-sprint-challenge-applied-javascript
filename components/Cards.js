@@ -20,3 +20,58 @@
 // Add a listener for click events so that when a user clicks on a card, the headline of the article is logged to the console.
 //
 // Use your function to create a card for each of the articles, and append each card to the DOM.
+
+import axios from 'axios'
+
+const entryPoint = document.querySelector('.cards-container')
+
+function CardMaker(obj){
+
+    // create elements 
+    const card = document.createElement('div')
+    const headlineD = document.createElement('div')
+    const authorD = document.createElement('div')
+    const imgC = document.createElement('div')
+    const img = document.createElement('img')
+    const author = document.createElement('span')
+
+    // assign classes to tags
+    card.classList.add('card')
+    headlineD.classList.add('headline')
+    authorD.classList.add('author')
+    imgC.classList.add('img-container')
+
+    //create text/img for needed tags
+    headlineD.textContent = obj.headline
+    img.src = obj.authorPhoto
+    author.textContent = obj.authorName
+
+    //create structure
+    entryPoint.appendChild(card)
+    card.appendChild(headlineD)
+    card.appendChild(authorD)
+    authorD.appendChild(imgC)
+    imgC.appendChild(img)
+    authorD.appendChild(author)
+
+    // add event listener 
+    card.addEventListener('click', (event) => {
+        console.log(obj.headline, event)
+    })
+
+    //return card
+    return card
+}
+
+axios.get('https://lambda-times-api.herokuapp.com/articles')
+.then(res => {
+ const dataFrame = Object.values(res.data.articles)
+ dataFrame.map(i => {
+     i.forEach(b => {
+         entryPoint.appendChild(CardMaker(b))
+     })
+ })
+})
+.catch(err => {
+console.log('this si the err:', err)
+})
